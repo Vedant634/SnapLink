@@ -37,7 +37,7 @@ public class UrlMappingService {
         return convertToDto(urlMapping);
     }
 
-    private UrlMappingDTO convertToDto(UrlMapping urlMapping){
+     UrlMappingDTO convertToDto(UrlMapping urlMapping){
         UrlMappingDTO urlMappingDTO = new UrlMappingDTO();
         urlMappingDTO.setId(urlMapping.getId());
         urlMappingDTO.setOriginalUrl(urlMapping.getOriginalUrl());
@@ -49,7 +49,7 @@ public class UrlMappingService {
 
     }
 
-    private String generateShortUrl(){
+     String generateShortUrl(){
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
         Random random = new Random();
