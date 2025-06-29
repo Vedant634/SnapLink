@@ -5,11 +5,13 @@ import { useStoreContext } from "../contextApi/ContextApi";
 import Card from "./Card";
 
 const LandingPage = () => {
-  const { token } = useStoreContext();
+ const {token:jwtToken} = useStoreContext()
+   const token = jwtToken?.accessToken;
   const navigate = useNavigate();
 
   const handleGetStarted = () => {
     if (token) {
+      console.log(token)
       navigate("/dashboard");
     } else {
       navigate("/login");

@@ -13,7 +13,8 @@ import { FaLink } from 'react-icons/fa'
 const DashBoardLayout = () => {
    
     const navigate = useNavigate()
-    const {token} = useStoreContext()
+   const {token:jwtToken} = useStoreContext()
+     const token = jwtToken?.accessToken;
    const [shortenPopUp, setShortenPopUp] = useState(false);
   
    

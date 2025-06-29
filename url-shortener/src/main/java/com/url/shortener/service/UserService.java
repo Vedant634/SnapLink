@@ -1,9 +1,11 @@
 package com.url.shortener.service;
 
+import com.url.shortener.Repository.RefreshTokenRepository;
 import com.url.shortener.Repository.UserRepository;
 import com.url.shortener.dto.LoginRequest;
 import com.url.shortener.exception.EmailAlreadyExistsException;
 import com.url.shortener.exception.UsernameAlreadyExistsException;
+import com.url.shortener.model.RefreshToken;
 import com.url.shortener.model.User;
 import com.url.shortener.security.jwt.JwtAuthenticationResponse;
 import com.url.shortener.security.jwt.JwtUtils;
@@ -23,6 +25,7 @@ public class UserService {
     private UserRepository userRepository;
     private AuthenticationManager authenticationManager;
     private JwtUtils jwtUtils;
+    private RefreshTokenService refreshTokenService;
 
     public User registerUser (User user){
 //        if (userRepository.existsByUsername(user.getUsername())) {
@@ -37,13 +40,19 @@ public class UserService {
     }
 
     public JwtAuthenticationResponse authenticateUser (LoginRequest loginRequest){
+
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
         );
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String jwt = jwtUtils.generateToken(userDetails);
-        return new JwtAuthenticationResponse(jwt);
+        String accessToken = jwtUtils.generateAccessToken(userDetails);
+
+        String refreshToken = jwtUtils.generateRefreshToken(userDetails);
+        refreshTokenService.createRefreshToken(loginRequest.getUsername(),refreshToken);
+        return new JwtAuthenticationResponse(accessToken,refreshToken);
     }
 
     public User findByUsername(String name) {
@@ -51,4 +60,28 @@ public class UserService {
                 ()-> new UsernameNotFoundException("User not found with username: "+ name  )
         );
     }
-}
+
+    public JwtAuthenticationResponse tokenGenerate(String requestToken) {
+        if (refreshTokenService.exist(requestToken)) {
+            if (refreshTokenService.isValid(requestToken)) {
+                String name = jwtUtils.getUserNameFromToken(requestToken);
+
+                User user = findByUsername(name);
+                UserDetailsImpl userDetails = UserDetailsImpl.build(user);
+
+                String accessToken = jwtUtils.generateAccessToken(userDetails);
+
+                return new JwtAuthenticationResponse(accessToken, requestToken);
+            } else {
+                throw new RuntimeException("Refresh token has expired");
+            }
+        } else {
+            throw new RuntimeException("Invalid refresh token");
+        }
+    }
+
+
+    public void deleteByToken(String refreshToken) {
+        refreshTokenService.deleteByToken(refreshToken);
+    }
+};

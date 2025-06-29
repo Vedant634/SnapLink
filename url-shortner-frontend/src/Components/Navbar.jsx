@@ -3,18 +3,36 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { IoIosMenu } from "react-icons/io";
 import { RxCross2 } from "react-icons/rx";
 import { useStoreContext } from "../contextApi/ContextApi";
+import api from "../api/api";
 
 const Navbar = () => {
   const navigate = useNavigate();
   const path = useLocation().pathname;
   const [navbarOpen, setNavbarOpen] = useState(false);
-  const {token ,setToken} = useStoreContext()
+  const {token:jwtToken ,setToken} = useStoreContext()
+  const token = jwtToken?.accessToken;
+ 
+  const onLogOutHandler = async () => {
+  try {
+    const savedToken = localStorage.getItem("JWT_TOKEN");
+    const parsedToken = savedToken ? JSON.parse(savedToken) : null;
 
-  const onLogOutHandler = () => {
-    setToken(null);
-    localStorage.removeItem("JWT_TOKEN");
-    navigate("/");
-  };
+    if (parsedToken?.refreshToken) {
+      await api.post("/api/auth/public/logout", {
+        refreshToken: parsedToken.refreshToken,
+      });
+    }
+  } catch (error) {
+    console.warn("Logout request failed:", error);
+
+  }
+
+  setToken(null);
+  localStorage.removeItem("JWT_TOKEN");
+
+
+  navigate("/");
+};
 
   return (
     <div className="h-16 bg-gradient-to-r from-purple-800 via-indigo-800 to-blue-700 shadow-md z-50 sticky top-0 w-full">

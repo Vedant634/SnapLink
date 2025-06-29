@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import TextField from './TextField';
-import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast';
-import api from '../api/api';
-import { useStoreContext } from '../contextApi/ContextApi';
-import { motion } from 'framer-motion';
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import TextField from "./TextField";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import api from "../api/api";
+import { useStoreContext } from "../contextApi/ContextApi";
+import { motion } from "framer-motion";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -19,24 +19,27 @@ const LoginPage = () => {
     reset,
   } = useForm({
     defaultValues: {
-      username: '',
-      email: '',
-      password: '',
+      username: "",
+      email: "",
+      password: "",
     },
-    mode: 'onTouched',
+    mode: "onTouched",
   });
 
   const loginHandler = async (data) => {
     setLoader(true);
     try {
-      const { data: response } = await api.post('/api/auth/public/login', data);
-      setToken(response.token);
-      toast.success('Login Successful!');
+      const { data: response } = await api.post("/api/auth/public/login", data);
+      setToken({
+        accessToken: response.access_token,
+        refreshToken: response.refresh_token,
+      });
+      toast.success("Login Successful!");
       reset();
-      navigate('/');
+      navigate("/");
     } catch (error) {
       console.error(error);
-      toast.error('Login Failed!');
+      toast.error("Login Failed!");
     } finally {
       setLoader(false);
     }
@@ -48,7 +51,7 @@ const LoginPage = () => {
         onSubmit={handleSubmit(loginHandler)}
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
         className="w-full max-w-md bg-white rounded-2xl shadow-xl px-8 py-10 border border-slate-400"
       >
         <h1 className="text-center font-extrabold text-3xl text-btnColor mb-1 tracking-tight">
@@ -86,7 +89,7 @@ const LoginPage = () => {
           type="submit"
           className="bg-customRed font-semibold text-white bg-custom-gradient w-full py-2 mt-6 rounded-md hover:text-slate-200 hover:shadow-lg transition-all duration-200"
         >
-          {loader ? 'Loading...' : 'Login'}
+          {loader ? "Loading..." : "Login"}
         </button>
 
         <p className="text-center text-sm text-slate-600 mt-6">

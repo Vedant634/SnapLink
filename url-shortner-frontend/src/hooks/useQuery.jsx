@@ -1,17 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../api/api";
 
-export const useFetchMyShortUrls = (token, onError) => {
+
+
+export const useFetchMyShortUrls = (onError) => {
   return useQuery({
     queryKey: ["my-shortenurls"],
     queryFn: async () => {
-      const response = await api.get("/api/urls/myurls", {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await api.get("/api/urls/myurls");
       return response.data;
     },
     select: (data) =>
@@ -19,29 +15,19 @@ export const useFetchMyShortUrls = (token, onError) => {
         (a, b) => new Date(b.createdDate) - new Date(a.createdDate)
       ),
     onError,
-  
   });
 };
 
-export const useFetchTotalClicks = (token, onError) => {
+export const useFetchTotalClicks = (onError) => {
   return useQuery({
     queryKey: ["url-totalClicks"],
     queryFn: async () => {
-      const response = await api.get("/api/urls/totalClicks", {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
-      console.log(response.data)
-      return response.data;
-    },
-    select: (data) =>
-      Object.entries(data).map(([date, count]) => ({
+      const response = await api.get("/api/urls/totalClicks");
+      return Object.entries(response.data).map(([date, count]) => ({
         clickDate: date,
         count,
-      })),
+      }));
+    },
     onError,
   });
 };

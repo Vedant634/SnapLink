@@ -51,11 +51,11 @@ class UserServiceTest {
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
                 .thenReturn(authentication);
-        when(jwtUtils.generateToken(userDetails)).thenReturn(mockJwt);
+        when(jwtUtils.generateAccessToken(userDetails)).thenReturn(mockJwt);
 
         JwtAuthenticationResponse response = userService.authenticateUser(loginRequest);
 
-        assertEquals(mockJwt, response.getToken());
+        assertEquals(mockJwt, response.getAccessToken());
         verify(authenticationManager).authenticate(any(UsernamePasswordAuthenticationToken.class));
         verify(jwtUtils).generateToken(userDetails);
     }

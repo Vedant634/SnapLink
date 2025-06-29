@@ -4,7 +4,7 @@ import Loader from "./Loader";
 
 const ShortenUrlPage = () => {
   const { url } = useParams();
-  const redirectedRef = useRef(false); // Flag to prevent multiple redirects
+  const redirectedRef = useRef(false); 
 
   useEffect(() => {
     if (url && !redirectedRef.current) {

@@ -29,13 +29,7 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
     setLoading(true);
    
     try {
-      const { data: response } = await api.post("/api/urls/shorten", data, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-          Authorization: "Bearer " + token,
-        },
-      });
+     const { data: response } = await api.post("/api/urls/shorten", data);
 
       const shortenUrl = `${import.meta.env.VITE_REACT_FRONT_END_URL}/u/${response.shortUrl}`;
       navigator.clipboard.writeText(shortenUrl).then(() => {
