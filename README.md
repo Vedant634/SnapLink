@@ -43,7 +43,7 @@ SnapLink/
 ## ⚙️ Database Schema
 
 <details>
-<summary>Show SQL Schema</summary>
+<summary><b>View SQL Tables</b></summary>
 
 ```sql
 CREATE TABLE users (
@@ -75,42 +75,29 @@ CREATE TABLE click_event (
   click_date TIMESTAMP NOT NULL,
   url_mapping_id BIGINT REFERENCES url_mapping(id)
 );
+```
 
 </details>
 
-**ERD Visual Diagram (Simplified):**
+---
 
-[users] ──< [url_mapping] ──< [click_event]
-│
-└────< [refresh_tokens]
+## 🗺️ ERD Diagram
 
+![ERD Diagram](./erd-diagram.png)
 
-## 🔐 Security and Testing
+> _Export your ERD from pgAdmin 4 and place the image in the root directory as `erd-diagram.png`._
 
-- **JWT + Refresh Tokens:**  
-  Stateless token authentication for secure login, role-based access, refresh endpoints, and logout functionality.
-- **Endpoint Protection:**  
-  Role-based authorization enforced for all user-specific API endpoints via Spring Security.
-- **Unit Testing:**  
-  Core backend services and controllers covered with JUnit and Mockito tests ensuring stability and quality.
+---
 
-## 🖥️ Project Structure
+## 🚀 Installation & Quickstart
 
-SnapLink/
-├── url-shortener/ # Spring Boot backend (Java)
-├── url-shortner-frontend/ # React frontend (JavaScript/CSS)
+> **Requirements**: Java 8+, Node.js + npm, PostgreSQL
 
+---
 
-## ⚡ Quickstart
+### 🧩 1. Clone the Repository
 
-### Prerequisites
-
-- Java 8 or higher
-- Node.js & npm
-- PostgreSQL
-
-### Clone, Build & Run
-
+```bash
 git clone https://github.com/Vedant634/SnapLink.git
 cd SnapLink
 ```
