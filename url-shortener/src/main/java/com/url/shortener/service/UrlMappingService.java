@@ -27,7 +27,7 @@ public class UrlMappingService {
     private ClickEventRepository clickEventRepository;
 
     public UrlMappingDTO createShortUrl(String originalUrl, User user) {
-        String shortUrl = generateShortUrl();
+        String shortUrl = generateUniqueShortUrl();
         UrlMapping urlMapping = new UrlMapping();
         urlMapping.setOriginalUrl(originalUrl);
         urlMapping.setShortUrl(shortUrl);
@@ -49,16 +49,26 @@ public class UrlMappingService {
 
     }
 
-     String generateShortUrl(){
+    public String generateUniqueShortUrl() {
         String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
         Random random = new Random();
-        StringBuilder shortUrl = new StringBuilder(8);
+        String shortUrl;
 
-        for(int i=0;i<8;i++){
-            shortUrl.append(characters.charAt(random.nextInt(characters.length())));
+        while (true) {
+            StringBuilder sb = new StringBuilder(8);
+            for (int i = 0; i < 8; i++) {
+                sb.append(characters.charAt(random.nextInt(characters.length())));
+            }
+            shortUrl = sb.toString();
+
+
+            if (urlMappingRepository.findByShortUrl(shortUrl) == null) {
+                break;
+            }
+
         }
-        return shortUrl.toString();
+
+        return shortUrl;
     }
 
     public List<UrlMappingDTO> getUrlsByUser(User user) {
