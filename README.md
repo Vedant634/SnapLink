@@ -85,7 +85,6 @@ CREATE TABLE click_event (
 
 ![ERD Diagram](./erd-diagram.png)
 
-> _Export your ERD from pgAdmin 4 and place the image in the root directory as `erd-diagram.png`._
 
 ---
 
