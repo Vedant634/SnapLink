@@ -47,45 +47,55 @@ SnapLink makes it easy to create short, secure URLs, manage your links, and anal
 ## ⚙️ Database Schema
 
 <details>
-<summary>Show SQL Schema</summary>
+<details>
+ <summary><b>Show SQL Schema</b></summary>
 
 CREATE TABLE users (
-id BIGSERIAL PRIMARY KEY,
-username VARCHAR(255) NOT NULL UNIQUE,
-email VARCHAR(255) NOT NULL UNIQUE,
-password VARCHAR(255) NOT NULL,
-role VARCHAR(255) NOT NULL
+  id BIGSERIAL PRIMARY KEY,
+  username VARCHAR(255) NOT NULL UNIQUE,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password VARCHAR(255) NOT NULL,
+  role VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE refresh_tokens (
-id BIGSERIAL PRIMARY KEY,
-token VARCHAR(255) NOT NULL,
-expiry_date TIMESTAMP NOT NULL,
-user_id BIGINT REFERENCES users(id)
+  id BIGSERIAL PRIMARY KEY,
+  token VARCHAR(255) NOT NULL,
+  expiry_date TIMESTAMP NOT NULL,
+  user_id BIGINT REFERENCES users(id)
 );
 
 CREATE TABLE url_mapping (
-id BIGSERIAL PRIMARY KEY,
-original_url VARCHAR(255) NOT NULL,
-short_url VARCHAR(255) UNIQUE NOT NULL,
-click_count INTEGER DEFAULT 0,
-created_date TIMESTAMP NOT NULL,
-user_id BIGINT REFERENCES users(id)
+  id BIGSERIAL PRIMARY KEY,
+  original_url VARCHAR(255) NOT NULL,
+  short_url VARCHAR(255) UNIQUE NOT NULL,
+  click_count INTEGER DEFAULT 0,
+  created_date TIMESTAMP NOT NULL,
+  user_id BIGINT REFERENCES users(id)
 );
 
 CREATE TABLE click_event (
-id BIGSERIAL PRIMARY KEY,
-click_date TIMESTAMP NOT NULL,
-url_mapping_id BIGINT REFERENCES url_mapping(id)
+  id BIGSERIAL PRIMARY KEY,
+  click_date TIMESTAMP NOT NULL,
+  url_mapping_id BIGINT REFERENCES url_mapping(id)
 );
+
 
 </details>
 
 **ERD Visual Diagram (Simplified):**
 
-[users] ──< [url_mapping] ──< [click_event]
-│
-└────< [refresh_tokens]
++--------+           +-------------+            +-------------+
+| users  |<---+   +--| url_mapping |<---+    +--| click_event |
++--------+    |   |  +-------------+    |    |  +-------------+
+              |   |                   |    |          
+              |   +---------------------+  |         
+              |                          |         
+              v                          v         
+         +----------------------+   +-------------------+
+         |   refresh_tokens     |   |   (more tables)   |
+         +----------------------+   +-------------------+
+
 
 
 ## 🔐 Security and Testing
