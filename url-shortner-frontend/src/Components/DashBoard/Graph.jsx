@@ -20,7 +20,7 @@ ChartJS.register(
 );
 
 const Graph = ({ graphData }) => {
-  console.log(graphData);
+ 
   const labels = graphData?.map((item) => item.clickDate);
   const userPerDaya = graphData?.map((item) => item.count);
 

@@ -20,6 +20,10 @@ public class WebConfig {
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
 
+        config.addExposedHeader("X-Ratelimit-Limit");
+        config.addExposedHeader("X-Ratelimit-Remaining");
+        config.addExposedHeader("X-Ratelimit-Reset");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);

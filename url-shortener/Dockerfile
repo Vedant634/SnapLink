@@ -28,6 +28,9 @@ WORKDIR /app
 # Copy the built JAR file from the build stage
 COPY --from=build /app/target/*.jar app.jar
 
+# Set active profile to prod inside the container
+ENV SPRING_PROFILES_ACTIVE=prod
+
 # Expose port 8080
 EXPOSE 8080
 

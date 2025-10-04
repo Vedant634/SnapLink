@@ -21,19 +21,26 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
-public class UrlMappingService {
+public class
+UrlMappingService {
 
     private UrlMappingRepository urlMappingRepository;
     private ClickEventRepository clickEventRepository;
 
     public UrlMappingDTO createShortUrl(String originalUrl, User user) {
-        String shortUrl = generateUniqueShortUrl();
+
         UrlMapping urlMapping = new UrlMapping();
         urlMapping.setOriginalUrl(originalUrl);
-        urlMapping.setShortUrl(shortUrl);
+
         urlMapping.setUser(user);
         urlMapping.setCreatedDate(LocalDateTime.now());
         UrlMapping savedUrlMapping = urlMappingRepository.save(urlMapping);
+
+        String shortUrl = idToBase62(savedUrlMapping.getId());
+        savedUrlMapping.setShortUrl(shortUrl);
+
+        savedUrlMapping = urlMappingRepository.save(savedUrlMapping);
+
         return convertToDto(urlMapping);
     }
 
@@ -47,6 +54,16 @@ public class UrlMappingService {
         urlMappingDTO.setUsername(urlMapping.getUser().getUsername());
         return urlMappingDTO;
 
+    }
+
+    public String idToBase62(long id) {
+        final String BASE62 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder sb = new StringBuilder();
+        while (id > 0) {
+            sb.append(BASE62.charAt((int) (id % 62)));
+            id /= 62;
+        }
+        return sb.reverse().toString();
     }
 
     public String generateUniqueShortUrl() {
