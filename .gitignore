@@ -1,0 +1,6 @@
+# IntelliJ IDEA
+.idea/
+
+# Common patterns
+*.log
+.DS_Store
