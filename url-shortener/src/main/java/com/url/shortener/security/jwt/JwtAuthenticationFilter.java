@@ -17,6 +17,7 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
     @Autowired
     private  JwtUtils jwtTokenProvider;
 
@@ -26,6 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try{
+//            System.out.println("PATH = " + request.getRequestURI());
+//            System.out.println("AUTH HEADER = " + request.getHeader("Authorization"));
+
             String jwt = jwtTokenProvider.getJwtFromHeader(request);
             if(jwt!=null && jwtTokenProvider.validateToken(jwt)){
                 String username = jwtTokenProvider.getUserNameFromToken(jwt);

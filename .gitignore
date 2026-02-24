@@ -4,3 +4,18 @@
 # Common patterns
 *.log
 .DS_Store
+
+# ===============================
+# Frontend
+# ===============================
+url-shortner-frontend/.env
+url-shortner-frontend/node_modules/
+
+# ===============================
+# Backend (only if contains secrets)
+# ===============================
+url-shortener/src/main/resources/application-dev.properties
+url-shortener/src/main/resources/application-prod.properties
+
+# General
+.env

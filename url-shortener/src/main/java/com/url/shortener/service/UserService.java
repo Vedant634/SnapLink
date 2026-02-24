@@ -11,6 +11,7 @@ import com.url.shortener.security.jwt.JwtAuthenticationResponse;
 import com.url.shortener.security.jwt.JwtUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,20 +40,41 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public JwtAuthenticationResponse authenticateUser (LoginRequest loginRequest){
+    public JwtAuthenticationResponse authenticateUser(LoginRequest loginRequest) {
 
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginRequest.getUsername(),loginRequest.getPassword())
-        );
+        try {
+            Authentication authentication =
+                    authenticationManager.authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    loginRequest.getUsername(),
+                                    loginRequest.getPassword()
+                            )
+                    );
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+            SecurityContextHolder.getContext()
+                    .setAuthentication(authentication);
 
-        UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-        String accessToken = jwtUtils.generateAccessToken(userDetails);
+            UserDetailsImpl userDetails =
+                    (UserDetailsImpl) authentication.getPrincipal();
 
-        String refreshToken = jwtUtils.generateRefreshToken(userDetails);
-        refreshTokenService.createRefreshToken(loginRequest.getUsername(),refreshToken);
-        return new JwtAuthenticationResponse(accessToken,refreshToken);
+            String accessToken =
+                    jwtUtils.generateAccessToken(userDetails);
+
+            String refreshToken =
+                    jwtUtils.generateRefreshToken(userDetails);
+
+            refreshTokenService.createRefreshToken(
+                    loginRequest.getUsername(),
+                    refreshToken
+            );
+
+            return new JwtAuthenticationResponse(
+                    accessToken, refreshToken
+            );
+
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("Invalid username or password");
+        }
     }
 
     public User findByUsername(String name) {

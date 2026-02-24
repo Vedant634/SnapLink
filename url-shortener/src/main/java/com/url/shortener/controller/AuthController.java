@@ -7,6 +7,8 @@ import com.url.shortener.model.User;
 import com.url.shortener.security.jwt.JwtAuthenticationResponse;
 import com.url.shortener.service.UserService;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,17 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
 
+
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
 public class AuthController {
 
     private UserService userService;
-
+    private static final Logger log = LoggerFactory.getLogger(AuthController.class);
 
     @PostMapping("/public/login")
     public ResponseEntity<?> loginUser(@RequestBody LoginRequest loginRequest) {
-
+        log.info("Login API called");
         return ResponseEntity.ok(userService.authenticateUser(loginRequest));
     }
 

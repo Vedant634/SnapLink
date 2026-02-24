@@ -11,10 +11,10 @@ import Graph from "./Graph";
 import api from "../../api/api";
 
 const ShortenItem = ({ originalUrl, shortUrl, clickCount, createdDate }) => {
-  const subDomain = import.meta.env.VITE_REACT_SUBDOMAIN.replace(
-    /^https?:\/\//,
-    ""
-  );
+  // const subDomain = import.meta.env.VITE_REACT_SUBDOMAIN.replace(
+  //   /^https?:\/\//,
+  //   ""
+  // );
   const { token } = useStoreContext();
   const navigate = useNavigate();
   const [isCopied, setIsCopied] = useState(false);

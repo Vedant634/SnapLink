@@ -4,10 +4,13 @@ import com.url.shortener.model.UrlMapping;
 import com.url.shortener.service.UrlMappingService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.net.URI;
 
 @RestController
 @AllArgsConstructor
@@ -17,14 +20,16 @@ public class RedirectController {
 
     @GetMapping("/{shortUrl}")
     public ResponseEntity<Void> redirect(@PathVariable String shortUrl){
-        UrlMapping urlMapping = urlMappingService.getOriginalUrl(shortUrl);
-        if(urlMapping != null){
-            HttpHeaders httpHeaders =new HttpHeaders();
-            httpHeaders.add("Location",urlMapping.getOriginalUrl());
-            return ResponseEntity.status(302).headers(httpHeaders).build();
+        String originalUrl =
+                urlMappingService.getOriginalUrl(shortUrl);
+        if(originalUrl != null){
+
+            return ResponseEntity
+                    .status(HttpStatus.FOUND) // 302
+                    .location(URI.create(originalUrl))
+                    .build();
         }
-        else {
-            return ResponseEntity.notFound().build();
-        }
+
+        return ResponseEntity.notFound().build();
     }
 }

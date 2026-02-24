@@ -56,7 +56,7 @@ const CreateNewShorten = ({ setOpen, refetch }) => {
     setSuccessMsg("");
 
     try {
-      const response = await api.post("/api/urls/shorten", data, { validateStatus: () => true });
+      const response = await api.post("/api/urls/shorten", data);
 
       // Fixed: Use lowercase header keys
       const newRateLimit = {
